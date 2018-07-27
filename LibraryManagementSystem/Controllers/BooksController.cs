@@ -17,7 +17,17 @@ namespace LibraryManagementSystem.Controllers
         // GET: Books
         public ActionResult Index()
         {
-            return View(db.Books.ToList());
+            var books = db.Books.Include(h => h.BorrowHistories)
+                .Select(b => new BookViewModel
+                {
+                    BookId = b.BookId,
+                    Author = b.Author,
+                    Publisher = b.Publisher,
+                    SerialNumber = b.SerialNumber,
+                    Title = b.Title,
+                    IsAvailable = !b.BorrowHistories.Any(h => h.ReturnDate == null)
+                }).ToList();
+            return View(books);
         }
 
         // GET: Books/Details/5

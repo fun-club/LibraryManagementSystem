@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LibraryManagementSystem.Models.Book>
+﻿@model IEnumerable<LibraryManagementSystem.Models.BookViewModel>
 
 @{
     ViewBag.Title = "Index";
@@ -26,26 +26,41 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SerialNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Author)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Publisher)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.BookId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.BookId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.BookId })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SerialNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Author)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Publisher)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.BookId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.BookId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.BookId })
+            </td>
+            <td>
+                @if (item.IsAvailable)
+                {
+                    <span>
+                        @Html.ActionLink("Assign", "Create", "BorrowHistories", new { id = item.BookId }, new { @class = "btn btn-primary" })
+                    </span>
+                }
+                else
+                {
+                    <span>
+                        @Html.ActionLink("Return", "Edit", "BorrowHistories", new { id = item.BookId }, new { @class = "btn btn-success" })
+                    </span>
+                }
+            </td>
+        </tr>
+    }
 
 </table>
