@@ -29,5 +29,7 @@ namespace LibraryManagementSystem.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<Book> Books { get; set; }
     }
 }
