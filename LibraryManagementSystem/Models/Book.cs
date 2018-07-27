@@ -16,5 +16,6 @@ namespace LibraryManagementSystem.Models
         public string SerialNumber { get; set; }
         public string Author { get; set; }
         public string Publisher { get; set; }
+        public List<BorrowHistory> BorrowHistories { get; set; }
     }
 }

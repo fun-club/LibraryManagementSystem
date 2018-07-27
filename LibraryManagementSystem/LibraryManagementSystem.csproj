@@ -206,6 +206,10 @@
     <Compile Include="Migrations\201807270927436_Add Customer Model.Designer.cs">
       <DependentUpon>201807270927436_Add Customer Model.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807271016357_Add Borrow History.cs" />
+    <Compile Include="Migrations\201807271016357_Add Borrow History.Designer.cs">
+      <DependentUpon>201807271016357_Add Borrow History.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Book.cs" />
@@ -311,6 +315,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807270927436_Add Customer Model.resx">
       <DependentUpon>201807270927436_Add Customer Model.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807271016357_Add Borrow History.resx">
+      <DependentUpon>201807271016357_Add Borrow History.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
