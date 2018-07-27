@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Razor.Parser.SyntaxTree;
 using LibraryManagementSystem.Models;
 
 namespace LibraryManagementSystem.Controllers
@@ -14,34 +15,45 @@ namespace LibraryManagementSystem.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: BorrowHistories
-        public ActionResult Index()
-        {
-            var borrowHistories = db.BorrowHistories.Include(b => b.Book).Include(b => b.Customer);
-            return View(borrowHistories.ToList());
-        }
+        //// GET: BorrowHistories
+        //public ActionResult Index()
+        //{
+        //    var borrowHistories = db.BorrowHistories.Include(b => b.Book).Include(b => b.Customer);
+        //    return View(borrowHistories.ToList());
+        //}
 
-        // GET: BorrowHistories/Details/5
-        public ActionResult Details(int? id)
+        //// GET: BorrowHistories/Details/5
+        //public ActionResult Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    BorrowHistory borrowHistory = db.BorrowHistories.Find(id);
+        //    if (borrowHistory == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(borrowHistory);
+        //}
+
+        // GET: BorrowHistories/Create
+        public ActionResult Create(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BorrowHistory borrowHistory = db.BorrowHistories.Find(id);
-            if (borrowHistory == null)
+
+            var book = db.Books.Find(id);
+            if (book == null)
             {
                 return HttpNotFound();
             }
-            return View(borrowHistory);
-        }
 
-        // GET: BorrowHistories/Create
-        public ActionResult Create()
-        {
-            ViewBag.BookId = new SelectList(db.Books, "BookId", "Title");
+            var borrowHistory = new BorrowHistory { BookId = book.BookId, BorrowDate = DateTime.Now };
             ViewBag.CustomerId = new SelectList(db.Customers, "CustomerId", "Name");
-            return View();
+            return View(borrowHistory);
         }
 
         // POST: BorrowHistories/Create
@@ -55,10 +67,9 @@ namespace LibraryManagementSystem.Controllers
             {
                 db.BorrowHistories.Add(borrowHistory);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Books");
             }
 
-            ViewBag.BookId = new SelectList(db.Books, "BookId", "Title", borrowHistory.BookId);
             ViewBag.CustomerId = new SelectList(db.Customers, "CustomerId", "Name", borrowHistory.CustomerId);
             return View(borrowHistory);
         }
@@ -70,13 +81,15 @@ namespace LibraryManagementSystem.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BorrowHistory borrowHistory = db.BorrowHistories.Find(id);
+            BorrowHistory borrowHistory = db.BorrowHistories
+                .Include(b => b.Book)
+                .Include(c => c.Customer)
+                .Where(b => b.BookId == id && b.ReturnDate == null)
+                .FirstOrDefault();
             if (borrowHistory == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.BookId = new SelectList(db.Books, "BookId", "Title", borrowHistory.BookId);
-            ViewBag.CustomerId = new SelectList(db.Customers, "CustomerId", "Name", borrowHistory.CustomerId);
             return View(borrowHistory);
         }
 
@@ -89,40 +102,44 @@ namespace LibraryManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(borrowHistory).State = EntityState.Modified;
+                var borrowHistoryItem = db.BorrowHistories.Find(borrowHistory.BorrowHistoryId);
+                if (borrowHistoryItem == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+
+                borrowHistoryItem.ReturnDate = DateTime.Now;
                 db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.BookId = new SelectList(db.Books, "BookId", "Title", borrowHistory.BookId);
-            ViewBag.CustomerId = new SelectList(db.Customers, "CustomerId", "Name", borrowHistory.CustomerId);
-            return View(borrowHistory);
-        }
-
-        // GET: BorrowHistories/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            BorrowHistory borrowHistory = db.BorrowHistories.Find(id);
-            if (borrowHistory == null)
-            {
-                return HttpNotFound();
+                return RedirectToAction("Index", "Books");
             }
             return View(borrowHistory);
         }
 
-        // POST: BorrowHistories/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            BorrowHistory borrowHistory = db.BorrowHistories.Find(id);
-            db.BorrowHistories.Remove(borrowHistory);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        //// GET: BorrowHistories/Delete/5
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    BorrowHistory borrowHistory = db.BorrowHistories.Find(id);
+        //    if (borrowHistory == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(borrowHistory);
+        //}
+
+        //// POST: BorrowHistories/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    BorrowHistory borrowHistory = db.BorrowHistories.Find(id);
+        //    db.BorrowHistories.Remove(borrowHistory);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
 
         protected override void Dispose(bool disposing)
         {
