@@ -75,7 +75,8 @@ namespace LibraryManagementSystem.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var user = await FindByNameOrEmailAsync(model.UserName);
+            var result = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -89,6 +90,20 @@ namespace LibraryManagementSystem.Controllers
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
             }
+        }
+
+        private async Task<ApplicationUser> FindByNameOrEmailAsync(string usernameOrEmail)
+        {
+            var username = usernameOrEmail;
+            if (usernameOrEmail.Contains("@"))
+            {
+                var userForEmail = await UserManager.FindByEmailAsync(usernameOrEmail);
+                if (userForEmail != null)
+                {
+                    username = userForEmail.UserName;
+                }
+            }
+            return await UserManager.FindByNameAsync(username);
         }
 
         //
@@ -151,7 +166,7 @@ namespace LibraryManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

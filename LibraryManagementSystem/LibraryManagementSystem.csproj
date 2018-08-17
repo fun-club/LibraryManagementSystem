@@ -210,6 +210,14 @@
     <Compile Include="Migrations\201807271016357_Add Borrow History.Designer.cs">
       <DependentUpon>201807271016357_Add Borrow History.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201808160935228_Adding Roles and Admin.cs" />
+    <Compile Include="Migrations\201808160935228_Adding Roles and Admin.Designer.cs">
+      <DependentUpon>201808160935228_Adding Roles and Admin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808170845086_Adding username field to RegisterViewModel.cs" />
+    <Compile Include="Migrations\201808170845086_Adding username field to RegisterViewModel.Designer.cs">
+      <DependentUpon>201808170845086_Adding username field to RegisterViewModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Book.cs" />
@@ -319,6 +327,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807271016357_Add Borrow History.resx">
       <DependentUpon>201807271016357_Add Borrow History.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808160935228_Adding Roles and Admin.resx">
+      <DependentUpon>201808160935228_Adding Roles and Admin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808170845086_Adding username field to RegisterViewModel.resx">
+      <DependentUpon>201808170845086_Adding username field to RegisterViewModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
